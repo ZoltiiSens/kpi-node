@@ -1,2 +1,3 @@
-const asd = 1;
+const asd = 1 + 
+  3;
 console.log(asd);
