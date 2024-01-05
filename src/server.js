@@ -11,24 +11,20 @@ const processedContentTypes = {
   "application/x-www-form-urlencoded": (data) => {
     return Object.fromEntries(new URLSearchParams(data));
   },
+  "application/octet-stream": (bufer) => bufer,
 };
 
 const server = http.createServer(async (req, res) => {
   const requestURL = new URL(req.url || "/", `http://${req.headers.host}`);
-  // console.log(`RequestURL: ${requestURL}`);
-  // console.log(`Router: ${router}`);
-  // for (let [key, val] of router){
-  // 	console.log(`${key} ---> ${val}`);
-  // }
-
   const routeModule = router.get(requestURL.pathname) ?? {};
-
   const handler = routeModule[req?.method] ?? defaultHandler;
   let payload = {};
   let rawRequest = "";
   for await (const chunk of req) {
     rawRequest += chunk;
   }
+  console.log(`RAW: ${rawRequest}`);
+  console.log(`req.headers["content-type"]: ${req.headers["content-type"]}`);
   if (req.headers["content-type"]) {
     const contentType = req.headers["content-type"].split(";")[0];
     if (processedContentTypes[contentType]) {
