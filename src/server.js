@@ -1,4 +1,8 @@
+import * as fs from "fs";
+import { Buffer, Blob } from "node:buffer";
+
 import * as http from "node:http";
+
 import router from "./routers.js";
 import defaultHandler from "./defaultHandler.js";
 import helpers from "./helpers.js";
@@ -11,7 +15,14 @@ const processedContentTypes = {
   "application/x-www-form-urlencoded": (data) => {
     return Object.fromEntries(new URLSearchParams(data));
   },
-  "application/octet-stream": (bufer) => bufer,
+  "application/octet-stream": (data) => {
+    // console.log(`WE GOT ${data}`);
+    // console.log(`typeof data ${typeof data}`);
+    const buffer = Buffer.from(data, "binary");
+    // console.log(`buffer ${buffer}`);
+    // console.log(`typeof buffer ${typeof buffer}`);
+    return buffer;
+  },
 };
 
 const server = http.createServer(async (req, res) => {
