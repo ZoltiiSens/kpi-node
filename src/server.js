@@ -1,8 +1,5 @@
-import * as fs from "fs";
-import { Buffer, Blob } from "node:buffer";
-
+import { Buffer } from "node:buffer";
 import * as http from "node:http";
-
 import router from "./routers.js";
 import defaultHandler from "./defaultHandler.js";
 import helpers from "./helpers.js";
@@ -16,12 +13,7 @@ const processedContentTypes = {
     return Object.fromEntries(new URLSearchParams(data));
   },
   "application/octet-stream": (data) => {
-    // console.log(`WE GOT ${data}`);
-    // console.log(`typeof data ${typeof data}`);
-    const buffer = Buffer.from(data, "binary");
-    // console.log(`buffer ${buffer}`);
-    // console.log(`typeof buffer ${typeof buffer}`);
-    return buffer;
+    return Buffer.from(data, "binary");
   },
 };
 
@@ -34,8 +26,6 @@ const server = http.createServer(async (req, res) => {
   for await (const chunk of req) {
     rawRequest += chunk;
   }
-  console.log(`RAW: ${rawRequest}`);
-  console.log(`req.headers["content-type"]: ${req.headers["content-type"]}`);
   if (req.headers["content-type"]) {
     const contentType = req.headers["content-type"].split(";")[0];
     if (processedContentTypes[contentType]) {
